@@ -1,0 +1,13 @@
+{
+  "name": "online-backgammon",
+  "version": "0.2.0",
+  "description": "Room-based online backgammon game built with Node.js, Express, and Socket.IO.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}

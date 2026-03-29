@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Online Backgammon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="languageDock card">
+    <label for="languageSelect" data-text="languageTitle">Language</label>
+    <select id="languageSelect">
+      <option value="en">English</option>
+      <option value="tr">Türkçe</option>
+    </select>
+  </div>
+
+  <div id="app">
+    <section id="lobbyScreen" class="screen card">
+      <div class="brand"><span data-text="brand">Online Backgammon</span></div>
+      <h1 data-text="lobbyTitle">Create a Room and Start Playing</h1>
+      <p class="muted" data-text="lobbySubtitle">Open a room, share the code, and jump into a fast online backgammon match.</p>
+
+      <div class="forms">
+        <div class="panel">
+          <h2 data-text="createRoom">Create Room</h2>
+          <label data-text="nameLabel">Name</label>
+          <input id="createName" maxlength="20" placeholder="Player 1" />
+          <label data-text="targetScoreLabel">Play to</label>
+          <select id="targetScore">
+            <option value="3">3</option>
+            <option value="5" selected>5</option>
+            <option value="7">7</option>
+            <option value="11">11</option>
+          </select>
+          <button id="createRoomBtn" class="primary" data-text="createRoom">Create Room</button>
+        </div>
+
+        <div class="panel">
+          <h2 data-text="joinRoom">Join Room</h2>
+          <label data-text="nameLabel">Name</label>
+          <input id="joinName" maxlength="20" placeholder="Opponent" />
+          <label data-text="roomCodeLabel">Room Code</label>
+          <input id="roomCodeInput" maxlength="5" placeholder="ABCDE" />
+          <button id="joinRoomBtn" data-text="joinRoom">Join Room</button>
+        </div>
+      </div>
+      <div id="lobbyMessage" class="message"></div>
+    </section>
+
+    <section id="gameScreen" class="screen hidden">
+      <div class="topbar card">
+        <div>
+          <div class="brand"><span data-text="brand">Online Backgammon</span></div>
+          <div class="roomRow"><span data-text="roomCodePrefix">Room Code:</span> <span id="roomCodeLabel">-----</span> <button id="copyRoomBtn" class="tiny" data-text="copy">Copy</button></div>
+          <div id="roomLinkPreview" class="roomLinkPreview muted"></div>
+        </div>
+        <div class="statusBlock">
+          <div id="turnBadge" class="turnBadge" data-text="waitingTurn">Waiting for turn</div>
+          <div id="statusText" class="muted" data-text="connecting">Connecting...</div>
+        </div>
+      </div>
+
+      <div class="scoreboard card">
+        <div id="whiteCard" class="playerCard">
+          <div class="avatar whiteAvatar"></div>
+          <div>
+            <div id="whiteName" class="playerName" data-text="player1">Player 1</div>
+            <div class="playerColorLabel" data-text="white">White</div>
+          </div>
+        </div>
+
+        <div class="scoreMiddle">
+          <div class="scoreBox" id="whiteScore">0</div>
+          <div class="targetLabel"><span id="targetLabel">5</span> <span id="targetLabelSuffix" data-text="targetSuffix">points to win</span></div>
+          <div class="scoreBox" id="blackScore">0</div>
+        </div>
+
+        <div id="blackCard" class="playerCard rightAlign">
+          <div>
+            <div id="blackName" class="playerName" data-text="player2">Player 2</div>
+            <div class="playerColorLabel" data-text="black">Black</div>
+          </div>
+          <div class="avatar blackAvatar"></div>
+        </div>
+      </div>
+
+      <div id="tableWrap" class="tableWrap card">
+        <div id="board" class="board"></div>
+      </div>
+
+      <div class="controlsRow">
+        <div class="dicePanel card">
+          <div class="dicePanelHeader">
+            <div class="diceTitle" data-text="diceTitle">Dice</div>
+            <label class="autoDiceToggle" for="autoDiceCheckbox">
+              <input id="autoDiceCheckbox" type="checkbox" />
+              <span class="autoDiceTrack">
+                <span class="autoDiceThumb"></span>
+              </span>
+              <span id="autoDiceLabelText" class="autoDiceLabelText" data-text="autoDiceLabel">Auto-roll</span>
+            </label>
+          </div>
+          <div id="diceArea" class="diceArea"></div>
+          <button id="rollDiceBtn" class="primary autoDiceBtn" data-text="rollDice">Roll Dice</button>
+        </div>
+
+        <div class="confirmPanel card">
+          <div class="confirmButtons">
+            <button id="resetTurnBtn" class="resetBtn" data-text="resetTurn">Reset Move</button>
+            <button id="confirmBtn" class="confirmBtn" data-text="confirmTurn">Confirm Move</button>
+          </div>
+          <div class="doublePanel">
+            <div class="doubleInfo">
+              <div class="doubleTitle" data-text="doubleTitle">2x Offer</div>
+              <div id="doubleStatusText" class="doubleStatusText" data-text="doubleStatusInactive">Not active yet</div>
+            </div>
+            <button id="doubleOfferBtn" class="doubleOfferBtn" data-text="sendDouble">Send 2x</button>
+          </div>
+          <div class="legend">
+            <span class="legendDot selected"></span> <span data-text="legendSelected">Selected checker</span>
+            <span class="legendDot possible"></span> <span data-text="legendPossible">Available move</span>
+            <span class="legendDot blocked"></span> <span data-text="legendBlocked">Blocked point</span>
+          </div>
+        </div>
+
+        <div class="chatPanel card">
+          <div class="chatHeader" data-text="chatTitle">Chat</div>
+          <div id="chatMessages" class="chatMessages"></div>
+          <div class="chatComposer">
+            <input id="chatInput" maxlength="220" placeholder="Type a message..." />
+            <button id="sendChatBtn" class="primary" data-text="send">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="customizationBar card">
+        <div class="customBlock">
+          <div class="customTitle" data-text="themeTitle">Theme</div>
+          <div id="themeOptions" class="optionRow"></div>
+        </div>
+        <div class="customBlock">
+          <div class="customTitle" data-text="skinTitle">Checker Skins</div>
+          <div id="skinOptions" class="optionRow"></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="roundModal" class="roundModal hidden">
+      <div class="roundModalCard">
+        <div class="roundModalTitle" data-text="roundTitle">Round Result</div>
+        <div id="roundModalText" class="roundModalText"></div>
+        <button id="closeRoundModalBtn" class="primary" data-text="ok">OK</button>
+      </div>
+    </div>
+
+    <div id="doubleModal" class="roundModal hidden">
+      <div class="roundModalCard">
+        <div class="roundModalTitle" data-text="doubleTitle">2x Offer</div>
+        <div id="doubleModalText" class="roundModalText">Your opponent wants to double the stakes.</div>
+        <div class="modalActions twoButtons">
+          <button id="declineDoubleBtn" class="ghostBtn" data-text="decline">Decline</button>
+          <button id="acceptDoubleBtn" class="primary" data-text="accept">Accept</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="matchModal" class="roundModal hidden">
+      <div class="roundModalCard matchModalCard">
+        <div class="roundModalTitle" data-text="matchTitle">Match Finished</div>
+        <div id="matchModalText" class="roundModalText"></div>
+        <div class="modalActions twoButtons">
+          <button id="rematchBtn" class="primary" data-text="rematch">Rematch</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastLayer" class="toastLayer"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="assets/themes/themes.js"></script>
+  <script src="assets/skins/skins.js"></script>
+  <script src="assets/ui/texts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
